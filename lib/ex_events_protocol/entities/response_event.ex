@@ -41,9 +41,22 @@ defmodule ExEventsProtocol.Entities.ResponseEvent do
 
   @spec new(Enumerable.t()) :: {:ok, t()} | {:error, ValidationError.t()}
   def new(overrides) do
+    response_types = ["response" | Map.keys(@errors)]
+
     __MODULE__
     |> struct(overrides)
     |> Event.validate()
+    |> case do
+      {:ok, %{name: name} = event} ->
+        unless String.ends_with?(name, response_types) do
+          raise ArgumentError, "Bad response name event"
+        end
+
+        {:ok, event}
+
+      error ->
+        error
+    end
   end
 
   @spec success?(t) :: boolean

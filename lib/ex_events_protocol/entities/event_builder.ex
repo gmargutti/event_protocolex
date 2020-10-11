@@ -19,7 +19,10 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
           | :event_not_found
 
   @type producer ::
-          (any() -> {:ok, any()} | {error_tag(), any} | {:error, {error_tag(), any()}})
+          (any() ->
+             {:ok, any()}
+             | {error_tag(), any}
+             | {:error, {error_tag(), any()}})
 
   @errors %{
     "error" => :error,
@@ -38,7 +41,7 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
                 |> Enum.flat_map(&[Atom.to_string(&1), &1])
 
   @spec response_for(request(), producer()) :: response()
-  def response_for(%RequestEvent{} = event, fun \\ fn _ -> {:ok, nil} end) do
+  def response_for(%RequestEvent{} = event, fun) when is_function(fun, 1) do
     case fun.(event) do
       {:ok, payload} ->
         response!(event, "response", payload)
@@ -58,7 +61,13 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
   end
 
   defp handle_error(request, {tag, payload}) do
-    error_name = Enum.find(@errors, "error", fn {_, error_name} -> error_name == tag end)
+    {error_name, _} =
+      Enum.find(
+        @errors,
+        {"error", :error},
+        fn {_, error_tag} -> error_tag == tag end
+      )
+
     response!(request, error_name, payload)
   end
 
@@ -98,7 +107,7 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
   def bad_protocol(%{} = request, event_message) when is_map(request) do
     request =
       request
-      |> Enum.filter(&Enum.member?(@allowed_keys, &1))
+      |> Enum.filter(&allowed_key?/1)
       |> Enum.map(&key_to_atom/1)
       |> Map.new()
       |> Map.put_new(:flowId, UUID.uuid1())
@@ -114,6 +123,14 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
     struct(ResponseEvent, Map.merge(request, overrides))
   end
 
+  defp allowed_key?({key, _value}) when is_binary(key),
+    do: Enum.member?(@allowed_keys, key)
+
+  defp allowed_key?({key, value}) when is_atom(key),
+    do: allowed_key?({Atom.to_string(key), value})
+
+  defp allowed_key?({_key, _value}), do: false
+
   defp key_to_atom({key, value}) do
     if is_atom(key),
       do: {key, value},
@@ -121,7 +138,7 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
   end
 
   @spec error(request(), any) :: response()
-  def error(request, event_message) do
+  def error(%RequestEvent{} = request, event_message) do
     response!(request, "badProtocol", event_message)
   end
 

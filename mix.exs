@@ -5,7 +5,7 @@ defmodule ExEventsProtocol.MixProject do
     [
       app: :ex_events_protocol,
       version: "0.1.0",
-      elixir: "~> 1.11-rc",
+      elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
