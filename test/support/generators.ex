@@ -37,16 +37,17 @@ defmodule Property.Generator do
   def gen_response_types do
     member_of([
       {"response", {:response, 200}},
-      {"error", {:error, 500}},
       {"badRequest", {:bad_request, 400}},
+      {"badProtocol", {:bad_protocol, 400}},
       {"unauthorized", {:unauthorized, 401}},
-      {"notFound", {:not_found, 404}},
       {"forbidden", {:forbidden, 403}},
       {"userDenied", {:user_denied, 403}},
       {"resourceDenied", {:resource_denied, 403}},
+      {"notFound", {:not_found, 404}},
+      {"eventNotFound", {:event_not_found, 404}},
       {"expired", {:expired, 410}},
       {"unmapped", {:unmapped, 500}},
-      {"eventNotFound", {:event_not_found, 404}}
+      {"error", {:error, 500}}
     ])
   end
 end

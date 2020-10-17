@@ -30,6 +30,7 @@ defmodule ExEventsProtocol.Entities.ResponseEvent do
   @errors %{
     "error" => {:error, 500},
     "badRequest" => {:bad_request, 400},
+    "badProtocol" => {:bad_protocol, 400},
     "unauthorized" => {:unauthorized, 401},
     "notFound" => {:not_found, 404},
     "forbidden" => {:forbidden, 403},
@@ -49,7 +50,7 @@ defmodule ExEventsProtocol.Entities.ResponseEvent do
     |> case do
       {:ok, %{name: name} = event} ->
         unless String.ends_with?(name, response_types) do
-          raise ArgumentError, "Bad response name event"
+          raise ArgumentError, "Bad response name event, #{name}"
         end
 
         {:ok, event}

@@ -37,7 +37,7 @@ defmodule ExEventsProtocol.Entities.ResponseEventTest do
         |> Map.to_list()
         |> Enum.map(fn {key, value} -> {String.to_atom(key), value} end)
 
-      assert_raise ArgumentError, "Bad response name event", fn ->
+      assert_raise ArgumentError, "Bad response name event, #{keyword[:name]}", fn ->
         ResponseEvent.new(keyword)
       end
     end

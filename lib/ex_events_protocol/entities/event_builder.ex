@@ -27,6 +27,7 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
   @errors %{
     "error" => :error,
     "badRequest" => :bad_request,
+    "badProtocol" => :bad_protocol,
     "unauthorized" => :unauthorized,
     "notFound" => :not_found,
     "forbidden" => :forbidden,
@@ -139,7 +140,7 @@ defmodule ExEventsProtocol.Entities.EventBuilder do
 
   @spec error(request(), any) :: response()
   def error(%RequestEvent{} = request, event_message) do
-    response!(request, "badProtocol", event_message)
+    response!(request, "error", event_message)
   end
 
   defp response!(

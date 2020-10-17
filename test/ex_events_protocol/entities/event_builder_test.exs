@@ -2,12 +2,10 @@ defmodule ExEventsProtocol.Entities.EventBuilderTest do
   use ExUnit.Case, async: true
   use ExUnitProperties
 
-  alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.Event
   alias ExEventsProtocol.Entities.EventBuilder
   alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ResponseEvent
-  alias ExEventsProtocol.Entities.ValidationError
   alias Property.Generator
 
   setup do
@@ -144,7 +142,6 @@ defmodule ExEventsProtocol.Entities.EventBuilderTest do
       {:error, cast_error} = Event.cast(bad_event, RequestEvent)
 
       %ResponseEvent{
-        flowId: response_flow_id,
         name: response_name,
         version: response_version,
         payload: payload
@@ -162,11 +159,10 @@ defmodule ExEventsProtocol.Entities.EventBuilderTest do
     %ResponseEvent{
       name: name,
       payload: payload,
-      version: version,
-      flowId: flow_id
+      version: version
     } = EventBuilder.error(request, %{code: :any, message: :any_message})
 
-    assert request.name == "#{name}:error"
+    assert name == "#{request.name}:error"
     assert request.version == version
     assert payload == %{code: :any, message: :any_message}
   end
