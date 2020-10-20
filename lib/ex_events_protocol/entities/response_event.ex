@@ -1,7 +1,7 @@
 defmodule ExEventsProtocol.Entities.ResponseEvent do
   alias __MODULE__
-  alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.Event
+  alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ValidationError
 
   @derive Jason.Encoder

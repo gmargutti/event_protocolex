@@ -1,7 +1,8 @@
 defmodule ExEventsProtocol.Entities.EventBuilder do
+
+  alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ResponseEvent
-  alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.ValidationError
 
   @type response :: ResponseEvent.t()

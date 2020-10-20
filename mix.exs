@@ -36,6 +36,7 @@ defmodule ExEventsProtocol.MixProject do
       {:jason, "~> 1.2"},
       {:plug, "~> 1.10"},
       {:stream_data, "~> 0.1", only: [:test, :dev]},
+      {:credo, "1.5.0-rc.4", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}

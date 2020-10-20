@@ -1,9 +1,9 @@
 defmodule ExEventsProtocol.Entities.Event do
   use Xema
 
+  alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ResponseEvent
-  alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.ValidationError
 
   @type event_module :: RequestEvent | ResponseEvent

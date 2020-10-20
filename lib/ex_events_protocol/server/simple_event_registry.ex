@@ -10,9 +10,9 @@ defmodule ExEventsProtocol.Server.SimpleEventRegistry do
 
       import ExEventsProtocol.Server.SimpleEventRegistry, only: [add_handler: 2]
 
+      alias ExEventsProtocol.Entities.EventBuilder
       alias ExEventsProtocol.Entities.RequestEvent
       alias ExEventsProtocol.Entities.ResponseEvent
-      alias ExEventsProtocol.Entities.EventBuilder
       alias ExEventsProtocol.Entities.ValidationError
     end
   end

@@ -2,8 +2,8 @@ defmodule ExEventsProtocol.Client.EventsClient do
   alias ExEventsProtocol.Client.EventError
   alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.Event
-  alias ExEventsProtocol.Entities.ResponseEvent
   alias ExEventsProtocol.Entities.RequestEvent
+  alias ExEventsProtocol.Entities.ResponseEvent
   alias Finch.Response
   alias Jason.DecodeError
 
