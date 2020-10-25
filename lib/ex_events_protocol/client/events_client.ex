@@ -4,22 +4,24 @@ defmodule ExEventsProtocol.Client.EventsClient do
   alias ExEventsProtocol.Entities.Event
   alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ResponseEvent
-  alias Finch.Response
   alias Jason.DecodeError
+  alias ExEventsProtocol.Client.HttpClient
 
   @type headers :: [{binary, binary}]
   @type url :: binary()
   @type response :: {:error, EventError.t()} | {:ok, ResponseEvent.t()}
+  @type options :: [{:http_client, HttpClient.t()}]
 
-  @spec send_event(RequestEvent.t(), url(), headers()) :: response()
-  def send_event(event, url, headers) do
-    :post
-    |> Finch.build(url, headers, Jason.encode!(event))
-    |> Finch.request(HttpClient)
+  @spec send_event(RequestEvent.t(), url(), headers(), options) :: response()
+  def send_event(event, url, headers, options \\ []) do
+    {http_client, remaing_opts} = Keyword.pop!(options, :http_client)
+
+    url
+    |> http_client.post(headers, Jason.encode!(event), remaing_opts)
     |> handle_response()
   end
 
-  defp handle_response({:ok, %Response{body: body}}) do
+  defp handle_response({:ok, body}) when is_binary(body) do
     with {:ok, decoded} <- Jason.decode(body),
          {:ok, response} <- Event.cast(decoded, ResponseEvent) do
       {:ok, response}
@@ -32,7 +34,8 @@ defmodule ExEventsProtocol.Client.EventsClient do
     end
   end
 
-  defp handle_response({:error, %{reason: reason}}) do
-    {:error, %EventError{reason: reason}}
-  end
+  defp handle_response({:error, %EventError{}} = error), do: error
+
+  defp handle_response({:error, _} = error),
+    do: %EventError{message: "unknow error, #{inspect(error)}"}
 end

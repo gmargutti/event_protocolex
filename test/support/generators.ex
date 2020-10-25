@@ -11,10 +11,10 @@ defmodule Property.Generator do
   def event_generator do
     gen all name <- string(:alphanumeric),
             version <- integer(),
-            metatada <- StreamData.map_of(string(:alphanumeric), integer()),
-            paylaod <- StreamData.map_of(string(:alphanumeric), integer()),
-            identity <- StreamData.map_of(string(:alphanumeric), integer()),
-            auth <- StreamData.map_of(string(:alphanumeric), integer()),
+            metatada <- map_of(string(:alphanumeric), integer()),
+            paylaod <- map_of(string(:alphanumeric), integer()),
+            identity <- map_of(string(:alphanumeric), integer()),
+            auth <- map_of(string(:alphanumeric), integer()),
             flow_id = UUID.uuid4(),
             id = UUID.uuid4() do
       %{

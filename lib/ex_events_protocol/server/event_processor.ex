@@ -7,24 +7,24 @@ defmodule ExEventsProtocol.Server.EventProcessor do
   @spec process_event(RequestEvent.t(), keyword()) ::
           {:ok, ResponseEvent.t()} | {:error, ResponseEvent.t()}
   def process_event(event, opts \\ []) do
-    registry = resolve_registry!(opts)
+    handler_discovery = resolve_handler_discovery!(opts)
 
     case RequestEvent.validate(event) do
       {:ok, request} ->
-        process(request, registry)
+        process(request, handler_discovery)
 
       {:error, %ValidationError{} = validation} ->
         {:error, EventBuilder.bad_protocol(event, validation)}
     end
   end
 
-  defp resolve_registry!(opts) do
-    opts[:registry] || Application.get_env(:ex_events_protocol, :registry) ||
-      raise "You must configure a EventRegistry or pass it as option in EventProcessor.process_event/2"
+  defp resolve_handler_discovery!(opts) do
+    opts[:handler_discovery] || Application.get_env(:ex_events_protocol, :handler_discovery) ||
+      raise "You must configure a EventHandlerDiscovery or pass it as option in EventProcessor.process_event/2"
   end
 
-  defp process(%RequestEvent{name: name, version: version} = event, registry) do
-    with {:ok, handler} <- registry.event_handler_for(name, version),
+  defp process(%RequestEvent{name: name, version: version} = event, handler_discovery) do
+    with {:ok, handler} <- handler_discovery.event_handler_for(name, version),
          %ResponseEvent{} = response <- handler.handle(event) do
       ensure_schema(response, event)
     else

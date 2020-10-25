@@ -38,16 +38,16 @@ defmodule ExEventsProtocol.Server.EventProcessorTest do
 
   test "successfully process event" do
     assert {:ok, %{payload: payload}} =
-             EventProcessor.process_event(request_event(), registry: DummyRegistry)
+             EventProcessor.process_event(request_event(), handler_discovery: DummyRegistry)
 
     assert payload == :dummy
   end
 
   test "should raise when registry configuration couldn't be found" do
-    Application.delete_env(:ex_events_protocol, :registry)
+    Application.delete_env(:ex_events_protocol, :handler_discovery)
 
     assert_raise RuntimeError,
-                 "You must configure a EventRegistry " <>
+                 "You must configure a EventHandlerDiscovery " <>
                    "or pass it as option in EventProcessor.process_event/2",
                  fn ->
                    EventProcessor.process_event(request_event())
@@ -55,14 +55,14 @@ defmodule ExEventsProtocol.Server.EventProcessorTest do
   end
 
   test "opts as a high precedence to choose a event registry" do
-    Application.put_env(:ex_events_protocol, :registry, InvalidRegistry)
+    Application.put_env(:ex_events_protocol, :handler_discovery, InvalidRegistry)
 
     assert {:ok, _response} =
-             EventProcessor.process_event(request_event(), registry: DummyRegistry)
+             EventProcessor.process_event(request_event(), handler_discovery: DummyRegistry)
   end
 
   test "fallback to application env when registry isn't supplied by opts" do
-    Application.put_env(:ex_events_protocol, :registry, DummyRegistry)
+    Application.put_env(:ex_events_protocol, :handler_discovery, DummyRegistry)
 
     assert {:ok, _response} = EventProcessor.process_event(request_event())
   end
@@ -71,7 +71,7 @@ defmodule ExEventsProtocol.Server.EventProcessorTest do
     request = %{request_event() | identity: nil}
 
     assert {:error, %{name: name, payload: validation_erros}} =
-             EventProcessor.process_event(request, registry: DummyRegistry)
+             EventProcessor.process_event(request, handler_discovery: DummyRegistry)
 
     assert String.ends_with?(name, ":badProtocol")
     assert validation_erros == %{properties: %{identity: %{type: :map, value: nil}}}
@@ -81,7 +81,7 @@ defmodule ExEventsProtocol.Server.EventProcessorTest do
     request = %{request_event() | name: "simulate_no_valid_response"}
 
     assert {:error, %{name: name, payload: validation_erros}} =
-             EventProcessor.process_event(request, registry: DummyRegistry)
+             EventProcessor.process_event(request, handler_discovery: DummyRegistry)
 
     assert String.ends_with?(name, ":badProtocol")
     assert validation_erros == %{properties: %{auth: %{type: :map, value: nil}}}
@@ -91,7 +91,7 @@ defmodule ExEventsProtocol.Server.EventProcessorTest do
     request = %{request_event() | name: "simulate_not_found"}
 
     assert {:error, %{name: name}} =
-             EventProcessor.process_event(request, registry: DummyRegistry)
+             EventProcessor.process_event(request, handler_discovery: DummyRegistry)
 
     assert String.ends_with?(name, ":eventNotFound")
   end
@@ -100,7 +100,7 @@ defmodule ExEventsProtocol.Server.EventProcessorTest do
     request = %{request_event() | name: "simulate_error"}
 
     assert {:error, %{name: name, payload: payload}} =
-             EventProcessor.process_event(request, registry: DummyRegistry)
+             EventProcessor.process_event(request, handler_discovery: DummyRegistry)
 
     assert String.ends_with?(name, ":error")
     assert payload == %{code: "UNHANLDED_ERROR", message: ":bad_response"}

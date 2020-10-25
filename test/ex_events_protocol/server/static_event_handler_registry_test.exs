@@ -1,8 +1,8 @@
-defmodule ExEventsProtocol.Server.SimpleEventRegistryTest do
+defmodule ExEventsProtocol.Server.StaticEventHandlerDiscoveryTest do
   use ExUnit.Case, async: true
 
   defmodule MyEventRegistry do
-    use ExEventsProtocol.Server.SimpleEventRegistry
+    use ExEventsProtocol.Server.StaticEventHandlerDiscovery
 
     add_handler Users,
       event: {"signup", 1},

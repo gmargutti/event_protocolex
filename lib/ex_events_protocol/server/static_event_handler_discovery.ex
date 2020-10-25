@@ -1,14 +1,14 @@
-defmodule ExEventsProtocol.Server.SimpleEventRegistry do
+defmodule ExEventsProtocol.Server.StaticEventHandlerDiscovery do
+
   @type handler :: module()
   @type event_id :: {String.t(), integer()}
   @type events :: keyword(event: event_id())
-
   defmacro __using__(_opts) do
     quote do
-      @before_compile ExEventsProtocol.Server.SimpleEventRegistry
-      @behaviour ExEventsProtocol.Server.EventRegistry
+      @before_compile ExEventsProtocol.Server.StaticEventHandlerDiscovery
+      @behaviour ExEventsProtocol.Server.EventHandlerDiscovery
 
-      import ExEventsProtocol.Server.SimpleEventRegistry, only: [add_handler: 2]
+      import ExEventsProtocol.Server.StaticEventHandlerDiscovery, only: [add_handler: 2]
 
       alias ExEventsProtocol.Entities.EventBuilder
       alias ExEventsProtocol.Entities.RequestEvent
@@ -36,7 +36,7 @@ defmodule ExEventsProtocol.Server.SimpleEventRegistry do
 
   defp bind(name, version, handler) do
     quote bind_quoted: [name: name, version: version, handler: handler] do
-      @impl ExEventsProtocol.Server.EventRegistry
+      @impl ExEventsProtocol.Server.EventHandlerDiscovery
       def event_handler_for(unquote(name), unquote(version)) do
         {:ok, unquote(handler)}
       end
