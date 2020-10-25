@@ -1,5 +1,4 @@
 defmodule ExEventsProtocol.Server.StaticEventHandlerDiscovery do
-
   @type handler :: module()
   @type event_id :: {String.t(), integer()}
   @type events :: keyword(event: event_id())

@@ -19,11 +19,7 @@ defmodule ExEventsProtocol.Server.SimpleEventHandlerRegistry do
   def event_handler_for(name, version) do
     __MODULE__
     |> Agent.get(&Function.identity/1)
-    |> Map.fetch({String.downcase(name), version})
-    |> case do
-      :error -> :not_found
-      {:ok, handler} -> {:ok, handler}
-    end
+    |> fetch_handler(name, version)
   end
 
   @impl EventHandlerRegistry
@@ -32,13 +28,30 @@ defmodule ExEventsProtocol.Server.SimpleEventHandlerRegistry do
       when is_binary(name) and
              is_integer(version) and version > 0 and
              is_atom(module) do
-    Agent.get_and_update(
-      __MODULE__,
-      fn state ->
-        {state, Map.put_new(state, {String.downcase(name), version}, module)}
-      end
-    )
+    __MODULE__
+    |> Agent.get_and_update(&update(&1, name, version, module))
+    |> case do
+      {:already_registered, _} = already_registered -> {:error, already_registered}
+      _ -> :ok
+    end
+  end
 
-    :ok
+  defp update(state, name, version, module) do
+    case fetch_handler(state, name, version) do
+      :not_found ->
+        {state, Map.put_new(state, {String.downcase(name), version}, module)}
+
+      {:ok, handler} ->
+        {{:already_registered, handler}, state}
+    end
+  end
+
+  defp fetch_handler(state, name, version) do
+    state
+    |> Map.fetch({String.downcase(name), version})
+    |> case do
+      :error -> :not_found
+      {:ok, handler} -> {:ok, handler}
+    end
   end
 end
