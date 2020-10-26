@@ -34,6 +34,7 @@ defmodule ExEventsProtocol.MixProject do
       {:xema, "~> 0.13"},
       {:jason, "~> 1.2"},
       {:plug, "~> 1.10"},
+      {:mox, "~> 1.0", only: [:test]},
       {:stream_data, "~> 0.1", only: [:test, :dev]},
       {:credo, "1.5.0-rc.4", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false}

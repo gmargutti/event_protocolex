@@ -7,8 +7,8 @@ defmodule ExEventsProtocol.Client.FinchHttpClient do
 
   @spec post(
           HttpClient.url(),
-          HttpClient.headers(),
           HttpClient.body(),
+          HttpClient.headers(),
           HttpClient.opts()
         ) :: {:ok, binary} | {:error, EventError.t()}
   def post(url, body, headers \\ [], opts \\ []) do

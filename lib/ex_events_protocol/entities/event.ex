@@ -43,6 +43,14 @@ defmodule ExEventsProtocol.Entities.Event do
     end
   end
 
+  @spec cast!(map(), event_module()) :: event() | no_return()
+  def cast!(data, module) do
+    case cast(data, module) do
+      {:ok, struct} -> struct
+      {:error, error} -> raise error
+    end
+  end
+
   @spec validate(event()) :: {:error, ValidationError.t()} | {:ok, event()}
   def validate(%{__struct__: module} = event) when is_atom(module) do
     module_schema = put_in(@schema.schema.module, module)
