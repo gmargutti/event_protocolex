@@ -31,20 +31,19 @@ defmodule ExEventsProtocol.Client.EventsClient do
       {:ok, response}
     else
       {:error, %DecodeError{} = error} ->
-        event_error("Bad json response", error)
+        error
+        |> Exception.message()
+        |> event_error()
 
-      {:error, %CastError{} = error} ->
-        event_error("Response violate protocol schema", error)
+      {:error, %CastError{}} ->
+        event_error("Response received violate the event protocol schema.")
 
       {:error, %ValidationError{} = error} ->
-        event_error("Bad response for sent request", error)
+        event_error(Exception.message(error))
     end
   end
 
   defp handle_response_for({:error, %EventError{}} = error, _), do: error
 
-  defp handle_response_for({:error, _} = error, _),
-    do: event_error("unknown error, #{inspect(error)}", nil)
-
-  defp event_error(message, reason), do: %EventError{message: message, reason: reason}
+  defp event_error(message), do: %EventError{message: message, reason: :failed_dependency}
 end

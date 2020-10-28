@@ -7,8 +7,6 @@ defmodule ExEventsProtocol.Client.EventsClientTest do
   alias ExEventsProtocol.Client.EventsClient
   alias ExEventsProtocol.Client.EventError
   alias ExEventsProtocol.Entities.Event
-  alias ExEventsProtocol.Entities.CastError
-  alias ExEventsProtocol.Entities.ValidationError
   alias ExEventsProtocol.Entities.EventBuilder
   alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ResponseEvent
@@ -64,7 +62,10 @@ defmodule ExEventsProtocol.Client.EventsClientTest do
         {:ok, bad_json}
       end)
 
-      assert %EventError{message: "Bad json response", reason: %Jason.DecodeError{}} =
+      assert %EventError{
+               message: "unexpected byte at position 43: 0x7D ('}')",
+               reason: :failed_dependency
+             } =
                EventsClient.send_event(
                  request_event(),
                  "https://api.event.com.br",
@@ -84,7 +85,10 @@ defmodule ExEventsProtocol.Client.EventsClientTest do
         {:ok, bad_protocol}
       end)
 
-      assert %EventError{message: "Response violate protocol schema", reason: %CastError{}} =
+      assert %EventError{
+               message: "Response received violate the event protocol schema.",
+               reason: :failed_dependency
+             } =
                EventsClient.send_event(
                  request_event(),
                  "https://api.event.com.br",
@@ -99,7 +103,7 @@ defmodule ExEventsProtocol.Client.EventsClientTest do
         Jason.encode(request)
       end)
 
-      assert %EventError{message: "Bad response for sent request", reason: %ValidationError{}} =
+      assert %EventError{message: "Bad event response name", reason: :failed_dependency} =
                EventsClient.send_event(
                  request,
                  "https://api.event.com.br",
@@ -109,23 +113,10 @@ defmodule ExEventsProtocol.Client.EventsClientTest do
 
     test "forward EventError struct receive from http client" do
       expect(StubbedHttpClient, :post, fn _, _, _, _ ->
-        {:error, %EventError{message: "error", reason: :any}}
+        {:error, %EventError{message: "error", reason: :timeout}}
       end)
 
-      assert %EventError{message: "error", reason: :any} =
-               EventsClient.send_event(
-                 request_event(),
-                 "https://api.event.com.br",
-                 http_client: StubbedHttpClient
-               )
-    end
-
-    test "handle unknown error response" do
-      expect(StubbedHttpClient, :post, fn _, _, _, _ ->
-        {:error, :any}
-      end)
-
-      assert %EventError{message: "unknown error, {:error, :any}", reason: nil} =
+      assert {:error, %EventError{message: "error", reason: :timeout}} =
                EventsClient.send_event(
                  request_event(),
                  "https://api.event.com.br",

@@ -1,5 +1,5 @@
 defmodule ExEventsProtocol.Client.FinchHttpClient do
-  @behaviour ExEventsProtocol.Client.HttpClient
+  @behaviour ExEventsProtocol.Client.HttpAdapter
 
   alias ExEventsProtocol.Client.EventError
   alias ExEventsProtocol.Client.HttpClient
@@ -16,15 +16,16 @@ defmodule ExEventsProtocol.Client.FinchHttpClient do
 
     :post
     |> Finch.build(url, headers, body)
-    |> Finch.request(finch)
+    |> Finch.request(finch, opts)
     |> handle_response()
   end
 
   defp ensure_finch_is_started do
-    case Process.whereis(__MODULE__) do
-      nil -> Finch.start_link(name: __MODULE__)
-      pid when is_pid(pid) -> __MODULE__
+    unless Process.whereis(__MODULE__) do
+      Finch.start_link(name: __MODULE__)
     end
+
+    __MODULE__
   end
 
   defp handle_response({:ok, %Response{body: body}}), do: {:ok, body}

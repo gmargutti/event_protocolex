@@ -1,3 +1,3 @@
-Mox.defmock(StubbedHttpClient, for: ExEventsProtocol.Client.HttpClient)
+Mox.defmock(StubbedHttpClient, for: ExEventsProtocol.Client.HttpAdapter)
 
 ExUnit.start()
