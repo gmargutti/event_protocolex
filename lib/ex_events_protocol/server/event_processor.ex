@@ -3,10 +3,13 @@ defmodule ExEventsProtocol.Server.EventProcessor do
   alias ExEventsProtocol.Entities.RequestEvent
   alias ExEventsProtocol.Entities.ResponseEvent
   alias ExEventsProtocol.Entities.ValidationError
+  alias ExEventsProtocol.Server.EventHandlerDiscovery
 
-  @spec process_event(RequestEvent.t(), keyword()) ::
+  @type option :: {:handler_discovery, EventHandlerDiscovery.t()}
+
+  @spec process_event(RequestEvent.t(), [option()]) ::
           {:ok, ResponseEvent.t()} | {:error, ResponseEvent.t()}
-  def process_event(event, opts \\ []) do
+  def process_event(event, opts) do
     handler_discovery = resolve_handler_discovery!(opts)
 
     case RequestEvent.validate(event) do

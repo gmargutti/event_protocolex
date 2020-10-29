@@ -1,8 +1,8 @@
 defmodule TwitterClientTest do
   use ExUnit.Case, async: true
 
-  alias ExEventsProtocol.Client.FinchHttpClient
   alias ExEventsProtocol.Client.EventError
+  alias ExEventsProtocol.Client.FinchHttpClient
 
   setup do
     bypass = Bypass.open()

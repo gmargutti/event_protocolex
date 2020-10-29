@@ -4,8 +4,9 @@ defmodule ExEventsProtocol.Server.SimpleEventHandlerRegistry do
   @behaviour ExEventsProtocol.Server.EventHandlerRegistry
   @behaviour ExEventsProtocol.Server.EventHandlerDiscovery
 
-  alias ExEventsProtocol.Server.EventHandlerRegistry
+  alias ExEventsProtocol.Server.EventHandler
   alias ExEventsProtocol.Server.EventHandlerDiscovery
+  alias ExEventsProtocol.Server.EventHandlerRegistry
 
   @type event_name :: String.t()
   @type event_version :: pos_integer()
@@ -15,7 +16,7 @@ defmodule ExEventsProtocol.Server.SimpleEventHandlerRegistry do
   end
 
   @impl EventHandlerDiscovery
-  @spec event_handler_for(event_name(), event_version()) :: {:ok, module()} | :not_found
+  @spec event_handler_for(event_name(), event_version()) :: {:ok, EventHandler.t()} | :not_found
   def event_handler_for(name, version) do
     __MODULE__
     |> Agent.get(&Function.identity/1)
@@ -23,7 +24,7 @@ defmodule ExEventsProtocol.Server.SimpleEventHandlerRegistry do
   end
 
   @impl EventHandlerRegistry
-  @spec register(event_name(), event_version(), module()) :: :ok
+  @spec register(event_name(), event_version(), EventHandler.t()) :: :ok
   def register(name, version, module)
       when is_binary(name) and
              is_integer(version) and version > 0 and

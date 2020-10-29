@@ -2,14 +2,14 @@ defmodule ExEventsProtocol.Client.FinchHttpClient do
   @behaviour ExEventsProtocol.Client.HttpAdapter
 
   alias ExEventsProtocol.Client.EventError
-  alias ExEventsProtocol.Client.HttpClient
+  alias ExEventsProtocol.Client.HttpAdapter
   alias Finch.Response
 
   @spec post(
-          HttpClient.url(),
-          HttpClient.body(),
-          HttpClient.headers(),
-          HttpClient.opts()
+          HttpAdapter.url(),
+          HttpAdapter.body(),
+          HttpAdapter.headers(),
+          HttpAdapter.opts()
         ) :: {:ok, binary} | {:error, EventError.t()}
   def post(url, body, headers \\ [], opts \\ []) do
     finch = opts[:finch_name] || ensure_finch_is_started()

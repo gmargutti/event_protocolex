@@ -4,8 +4,8 @@ defmodule ExEventsProtocol.Client.EventsClientTest do
   import Mox
   import Property.Generator
 
-  alias ExEventsProtocol.Client.EventsClient
   alias ExEventsProtocol.Client.EventError
+  alias ExEventsProtocol.Client.EventsClient
   alias ExEventsProtocol.Entities.Event
   alias ExEventsProtocol.Entities.EventBuilder
   alias ExEventsProtocol.Entities.RequestEvent

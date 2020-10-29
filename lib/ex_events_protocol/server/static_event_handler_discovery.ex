@@ -1,18 +1,15 @@
 defmodule ExEventsProtocol.Server.StaticEventHandlerDiscovery do
-  @type handler :: module()
+  alias ExEventsProtocol.Server.EventHandler
+
   @type event_id :: {String.t(), integer()}
   @type events :: keyword(event: event_id())
+
   defmacro __using__(_opts) do
     quote do
       @before_compile ExEventsProtocol.Server.StaticEventHandlerDiscovery
       @behaviour ExEventsProtocol.Server.EventHandlerDiscovery
 
       import ExEventsProtocol.Server.StaticEventHandlerDiscovery, only: [add_handler: 2]
-
-      alias ExEventsProtocol.Entities.EventBuilder
-      alias ExEventsProtocol.Entities.RequestEvent
-      alias ExEventsProtocol.Entities.ResponseEvent
-      alias ExEventsProtocol.Entities.ValidationError
     end
   end
 
@@ -24,9 +21,9 @@ defmodule ExEventsProtocol.Server.StaticEventHandlerDiscovery do
   end
 
   @doc """
-    A macro to map a event handler for the given events`
+    A macro to register a event handler for the given events`
   """
-  @spec add_handler(handler(), events()) :: any()
+  @spec add_handler(EventHandler.t(), events()) :: any()
   defmacro add_handler(handler, events) do
     for {:event, {name, version}} <- events do
       bind(name, version, handler)

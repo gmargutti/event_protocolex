@@ -1,6 +1,5 @@
 defmodule ExEventsProtocol.Client.EventsClient do
   alias ExEventsProtocol.Client.EventError
-  alias ExEventsProtocol.Client.HttpClient
   alias ExEventsProtocol.Entities.CastError
   alias ExEventsProtocol.Entities.Event
   alias ExEventsProtocol.Entities.RequestEvent
@@ -8,10 +7,9 @@ defmodule ExEventsProtocol.Client.EventsClient do
   alias ExEventsProtocol.Entities.ValidationError
   alias Jason.DecodeError
 
-  @type headers :: [{binary, binary}]
-  @type url :: binary()
+  @type url :: String.t()
+  @type option :: {:http_client, module()}
   @type response :: {:error, EventError.t()} | {:ok, ResponseEvent.t()}
-  @type option :: {:http_client, HttpClient.t()}
 
   @content_type {"content-type", "application/json"}
 
