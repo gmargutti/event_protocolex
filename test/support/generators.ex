@@ -2,8 +2,8 @@ defmodule Property.Generator do
   import StreamData
   import ExUnitProperties
 
-  alias ExEventsProtocol.Entities.RequestEvent
-  alias ExEventsProtocol.Entities.ResponseEvent
+  alias EventsProtocolex.Entities.RequestEvent
+  alias EventsProtocolex.Entities.ResponseEvent
 
   require ExUnitProperties
 

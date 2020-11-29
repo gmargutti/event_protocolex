@@ -1,9 +1,9 @@
-defmodule ExEventsProtocol.MixProject do
+defmodule EventsProtocolex.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :ex_events_protocol,
+      app: :events_protocolex,
       version: "0.1.0",
       elixir: "~> 1.6",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -37,8 +37,9 @@ defmodule ExEventsProtocol.MixProject do
       {:mox, "~> 1.0", only: [:test]},
       {:bypass, "~> 1.0", only: :test},
       {:stream_data, "~> 0.1", only: [:test, :dev]},
-      {:credo, "~> 1.5.0-rc.4", only: [:dev], runtime: false},
-      {:dialyxir, "~> 1.0", only: [:dev], runtime: false}
+      {:ex_doc, "~> 0.23", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0", only: :dev, runtime: false},
+      {:credo, "~> 1.5.0-rc.4", only: :dev, runtime: false}
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"}
     ]

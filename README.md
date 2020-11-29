@@ -1,21 +1,25 @@
-# ExEventsProtocol
 
-**TODO: Add description**
+# EventsProtocolex
+
+#### NOT READY FOR PRODUCTION, USE BY YOUR ACCOUNT AND RISK.
+
+**An Elixir implementation of Guiabolso Events Protocol https://github.com/GuiaBolso/events-protocol**
+
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `ex_events_protocol` to your list of dependencies in `mix.exs`:
+by adding `exents_protocolex` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:ex_events_protocol, "~> 0.1.0"}
+    {:exents_protocolex, "~> 0.1.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/ex_events_protocol](https://hexdocs.pm/ex_events_protocol).
+be found at [https://hexdocs.pm/exents_protocolex](https://hexdocs.pm/exents_protocolex).
 
