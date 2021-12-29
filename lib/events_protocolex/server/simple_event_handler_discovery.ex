@@ -36,6 +36,10 @@ defmodule EventsProtocolex.Server.SimpleEventHandlerDiscovery do
 
   defp bind(name, version, handler) do
     quote bind_quoted: [name: name, version: version, handler: handler] do
+      unless function_exported?(handler, :handle, 1) do
+        raise "#{inspect(handler)} must implement handle/1 to be a valider EventHandler!"
+      end
+
       @impl EventsProtocolex.Server.EventHandlerDiscovery
       def event_handler_for(unquote(name), unquote(version)) do
         {:ok, unquote(handler)}

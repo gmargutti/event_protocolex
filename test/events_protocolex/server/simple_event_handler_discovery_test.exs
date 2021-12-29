@@ -1,6 +1,14 @@
 defmodule EventsProtocolex.Server.SimpleEventHandlerDiscoveryTest do
   use ExUnit.Case, async: true
 
+  defmodule Users do
+    def handle(_), do: nil
+  end
+
+  defmodule Orders do
+    def handle(_), do: nil
+  end
+
   defmodule MyEventRegistry do
     use EventsProtocolex.Server.SimpleEventHandlerDiscovery
 
