@@ -1,7 +1,7 @@
 
 # EventsProtocolex
 
-#### NOT READY FOR PRODUCTION, USE BY YOUR ACCOUNT AND RISK.
+#### NOT READY FOR PRODUCTION, IMPLEMENTED JUST FOR FUN!
 
 **An Elixir implementation of Guiabolso Events Protocol https://github.com/GuiaBolso/events-protocol**
 
