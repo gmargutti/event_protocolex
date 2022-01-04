@@ -62,10 +62,7 @@ defmodule EventsProtocolex.Client.EventsClientTest do
         {:ok, bad_json}
       end)
 
-      assert %EventError{
-               message: "unexpected byte at position 43: 0x7D (\"}\")",
-               reason: :failed_dependency
-             } =
+      assert %EventError{message: "unexpected byte at position 43: 0x7D (\"}\")"} =
                EventsClient.send_event(
                  request_event(),
                  "https://api.event.com.br",
@@ -85,10 +82,12 @@ defmodule EventsProtocolex.Client.EventsClientTest do
         {:ok, bad_protocol}
       end)
 
-      assert %EventError{
-               message: "Response received violate the event protocol schema.",
-               reason: :failed_dependency
-             } =
+      message =
+        "cannot cast %{\"name\" => \"anything\", \"version\" => 1} to " <>
+          "EventsProtocolex.Entities.ResponseEvent missing required keys " <>
+          "[:auth, :flowId, :id, :identity, :metadata, :payload]"
+
+      assert %EventError{message: ^message} =
                EventsClient.send_event(
                  request_event(),
                  "https://api.event.com.br",
@@ -103,7 +102,7 @@ defmodule EventsProtocolex.Client.EventsClientTest do
         Jason.encode(request)
       end)
 
-      assert %EventError{message: "Bad event response name", reason: :failed_dependency} =
+      assert %EventError{message: "Bad event response name"} =
                EventsClient.send_event(
                  request,
                  "https://api.event.com.br",
@@ -113,10 +112,10 @@ defmodule EventsProtocolex.Client.EventsClientTest do
 
     test "forward EventError struct receive from http client" do
       expect(StubbedHttpClient, :post, fn _, _, _, _ ->
-        {:error, %EventError{message: "error", reason: :timeout}}
+        {:error, %EventError{message: "error"}}
       end)
 
-      assert %EventError{message: "error", reason: :timeout} =
+      assert %EventError{message: "error"} =
                EventsClient.send_event(
                  request_event(),
                  "https://api.event.com.br",

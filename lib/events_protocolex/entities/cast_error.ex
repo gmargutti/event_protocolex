@@ -11,7 +11,11 @@ defmodule EventsProtocolex.Entities.CastError do
   @type t :: %__MODULE__{}
 
   def from(%Xema.CastError{} = error) do
-    info = Map.from_struct(error)
+    info =
+      error
+      |> Map.from_struct()
+      |> Map.put(:message, Exception.message(error))
+
     struct(__MODULE__, info)
   end
 end

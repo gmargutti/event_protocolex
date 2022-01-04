@@ -38,13 +38,18 @@ defmodule EventsProtocolex.Entities.EventTest do
                 event_module <- Generator.event_modules(),
                 missing_property <- member_of(properties),
                 invalid_event = Map.drop(event, [Atom.to_string(missing_property)]) do
-        assert {:error,
-                %CastError{
-                  path: [],
-                  required: [missing_property],
-                  value: invalid_event,
-                  to: event_module
-                }} == Event.cast(invalid_event, event_module)
+        cast = Event.cast(invalid_event, event_module)
+
+        assert {:error, %CastError{}} = cast
+
+        {:error, cast_error} = cast
+
+        assert [missing_property] == cast_error.required
+        assert cast_error.path == []
+        assert cast_error.value == invalid_event
+        assert cast_error.to == event_module
+        assert cast_error.message =~ "missing required keys [:#{missing_property}]"
+        assert String.starts_with?(cast_error.message, "cannot cast")
       end
     end
   end

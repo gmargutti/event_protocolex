@@ -1,7 +1,6 @@
 defmodule EventsProtocolex.Client.FinchHttpClientTest do
   use ExUnit.Case, async: true
 
-  alias EventsProtocolex.Client.EventError
   alias EventsProtocolex.Client.FinchHttpClient
 
   setup do
@@ -25,7 +24,7 @@ defmodule EventsProtocolex.Client.FinchHttpClientTest do
 
     Bypass.down(bypass)
 
-    assert {:error, %EventError{reason: :econnrefused}} ==
+    assert {:error, %Mint.TransportError{reason: :econnrefused}} ==
              bypass.port
              |> endpoint_url()
              |> FinchHttpClient.post("Elixir is awesome!")
@@ -49,7 +48,7 @@ defmodule EventsProtocolex.Client.FinchHttpClientTest do
 
     url = endpoint_url(bypass.port)
 
-    assert {:error, %EventError{reason: :timeout}} ==
+    assert {:error, %Mint.TransportError{reason: :timeout}} ==
              FinchHttpClient.post(url, "Data", [], finch_name: :myFinch, receive_timeout: timeout)
 
     # # cleanup bypass state

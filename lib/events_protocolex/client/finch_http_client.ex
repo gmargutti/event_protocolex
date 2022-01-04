@@ -4,7 +4,6 @@ defmodule EventsProtocolex.Client.FinchHttpClient do
   """
   @behaviour EventsProtocolex.Client.HttpAdapter
 
-  alias EventsProtocolex.Client.EventError
   alias EventsProtocolex.Client.HttpAdapter
   alias Finch.Response
 
@@ -14,7 +13,7 @@ defmodule EventsProtocolex.Client.FinchHttpClient do
           HttpAdapter.body(),
           HttpAdapter.headers(),
           HttpAdapter.opts()
-        ) :: {:ok, binary} | {:error, EventError.t()}
+        ) :: {:ok, binary} | {:error, Exception.t()}
   def post(url, body, headers \\ [], opts \\ []) do
     finch = opts[:finch_name] || ensure_finch_is_started()
 
@@ -33,5 +32,6 @@ defmodule EventsProtocolex.Client.FinchHttpClient do
   end
 
   defp handle_response({:ok, %Response{body: body}}), do: {:ok, body}
-  defp handle_response({:error, %{reason: reason}}), do: {:error, %EventError{reason: reason}}
+
+  defp handle_response({:error, _exception} = error), do: error
 end

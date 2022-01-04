@@ -1,5 +1,5 @@
 defmodule EventsProtocolex.Client.EventError do
-  defexception [:message, :reason]
+  defexception [:message]
 
   @type t :: %__MODULE__{}
 end

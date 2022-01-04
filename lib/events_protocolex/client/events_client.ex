@@ -29,20 +29,18 @@ defmodule EventsProtocolex.Client.EventsClient do
          {:ok, validated_response} <- ResponseEvent.validate(response, request) do
       validated_response
     else
-      {:error, %DecodeError{} = error} ->
-        error
-        |> Exception.message()
-        |> event_error()
+      {:error, %{__exception__: true}} = error ->
+        event_error(error)
 
       {:error, %CastError{}} ->
-        event_error("Response received violate the event protocol schema.")
-
-      {:error, %ValidationError{} = error} ->
-        event_error(Exception.message(error))
+        event_error("The receive Response violate the event protocol schema.")
     end
   end
 
-  defp handle_response_for({:error, %EventError{} = error}, _), do: error
+  defp handle_response_for({:error, _exception} = error, _request), do: event_error(error)
 
-  defp event_error(message), do: %EventError{message: message, reason: :failed_dependency}
+  defp event_error({:error, %{__exception__: true} = exception}),
+    do: %EventError{message: Exception.message(exception)}
+
+  defp event_error(message) when is_binary(message), do: %EventError{message: message}
 end
